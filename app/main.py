@@ -1,3 +1,5 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 class Car:
     def __init__(
             self, comfort_class: int,
@@ -29,11 +31,13 @@ class CarWashStation:
         return round(result, 1)
 
     def calculate_washing_price(self, car: Car) -> float:
-        return round(
-            car.comfort_class *
-            (self.clean_power - car.clean_mark) *
-            self.average_rating /
-            self.distance_from_city_center, 1)
+        raw = (
+            Decimal(str(car.comfort_class)) *
+            (Decimal(str(self.clean_power)) - Decimal(str(car.clean_mark))) *
+            Decimal(str(self.average_rating)) /
+            Decimal(str(self.distance_from_city_center))
+        )
+        return float(raw.quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
 
     def wash_single_car(self, car: Car) -> None:
         if self.clean_power > car.clean_mark:
